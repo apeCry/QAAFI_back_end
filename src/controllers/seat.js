@@ -26,9 +26,33 @@ async function getAllSeats(req, res) {
     return  res.json(seats);
 }
 
-function updateSeat(req, res) {}
+async function updateSeat(req, res) {
+    const { id: code } = req.params;
+    const { description } = req.body;
+    const newSeat = await Seat.findByIdAndUpdate(
+        code,
+        { description },
+        {
+        new: true // return the updated object
+        // runValidators: true // run validator against new value
+        }
+    );
+    if (!newSeat) {
+        return res.status(404).json('seat not found');
+    }
+    return res.json(newSeat);
+}
 
-function deleteSeat(req, res) {}
+async function deleteSeat(req, res) {
+    const {id: code} = req.params;
+    const seat = await Seat.findByIdAndDelete(code);
+
+    if (!seat) {
+        return res.status(404).json('seat not found');
+    }
+
+    return res.json(seat);
+}
 
 module.exports = {
   addSeat,

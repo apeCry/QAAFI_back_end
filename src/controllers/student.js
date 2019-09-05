@@ -29,9 +29,33 @@ async function getAllStudents(req, res) {
     return  res.json(students);
 }
 
-function updateStudent(req, res) {}
+async function updateStudent(req, res) {
+    const { id } = req.params;
+    const { firstName, lastName, dob, email, phone } = req.body;
+    const newStudent = await Student.findByIdAndUpdate(
+        id,
+        { firstName, lastName, dob, email, phone },
+        {
+        new: true // return the updated object
+        // runValidators: true // run validator against new value
+        }
+    );
+    if (!newStudent) {
+        return res.status(404).json('student not found');
+    }
+    return res.json(newStudent);
+}
 
-function deleteStudent(req, res) {}
+async function deleteStudent(req, res) {
+    const {id} = req.params;
+    const student = await Student.findByIdAndDelete(id);
+
+    if (!student) {
+        return res.status(404).json('student not found');
+    }
+
+    return res.json(student);
+}
 
 module.exports = {
   addStudent,
