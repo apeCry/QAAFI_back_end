@@ -25,6 +25,7 @@ const schema = new mongoose.Schema({
       msg: 'Invalid email format'
     }
   },
+  
   phone:{
     type: String,
     required:true
