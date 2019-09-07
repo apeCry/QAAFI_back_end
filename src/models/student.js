@@ -29,6 +29,10 @@ const schema = new mongoose.Schema({
     type: String,
     required:true
   },
+  seats: [
+      {type: String, ref: 'Seat'}
+  ]
+
 });
 
 const model = mongoose.model('Student', schema);
