@@ -1,4 +1,5 @@
 const Student = require('../models/student');
+const Seat = require('../models/seat');
 
 async function addStudent(req, res) {
     const {firstName, lastName, dob, email, phone} = req.body;
@@ -15,7 +16,7 @@ async function addStudent(req, res) {
 
 async function getStudent(req, res) {
     const {id} = req.params;
-    const student = await Student.findById(id);
+    const student = await Student.findById(id).populate('seats');  //show all the information of seats
 
     if (!student) {
         return res.status(404).json('student not found');
@@ -57,10 +58,47 @@ async function deleteStudent(req, res) {
     return res.json(student);
 }
 
+async function addSeat(req, res) {
+    const {id, code} = req.params;
+    const student = await Student.findById(id);
+    const seat = await Seat.findById(code);
+
+    if (!student || !seat) {
+        return res.status(404).json('student or seat not found');
+    }
+
+    student.seats.addToSet(seat._id);
+    await student.save();
+    return res.json(student);
+}
+
+async function deleteSeat(req, res) {
+    const {id, code} = req.params;
+    const student = await Student.findById(id);
+    const seat = await Seat.findById(code);
+
+    if (!student || !seat) {
+        return res.status(404).json('student or seat not found');
+    }
+
+    const lengthBeforePull = student.seats.length;
+    student.seats.pull(seat._id);
+    const lengthAfterPull = student.seats.length;
+
+    if (lengthBeforePull === lengthAfterPull) {
+        return res.status(404).json('student does not have this seat');
+    }
+
+    await student.save();
+    return res.json(student);
+}
+
 module.exports = {
   addStudent,
   getAllStudents,
   getStudent,
   updateStudent,
-  deleteStudent
+  deleteStudent,
+  addSeat,
+  deleteSeat,
 };
