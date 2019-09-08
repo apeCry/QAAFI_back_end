@@ -5,7 +5,9 @@ const {
     getAllSeats,
     getSeat,
     updateSeat,
-    deleteSeat
+    deleteSeat,
+    addStudent,
+    deleteStudent
 } = require('../controllers/Seat');
 
 const router = express.Router();
@@ -16,5 +18,7 @@ router.get('/:id', getSeat);
 router.post('/', addSeat);
 router.put('/:id', updateSeat);
 router.delete('/:id', deleteSeat);
+router.post('/:code/students/:id', addStudent);
+router.delete('/:code/students/:id', deleteStudent);
 
 module.exports = router;

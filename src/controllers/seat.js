@@ -51,7 +51,6 @@ async function deleteSeat(req, res) {
     if (!seat) {
         return res.status(404).json('seat not found');
     }
-
     await Student.updateMany(
         {
             _id: { $in: seat.students }
@@ -62,14 +61,56 @@ async function deleteSeat(req, res) {
             }
         }
     );
-
     return res.json(seat);
 }
+
+async function addStudent(req, res) {
+    const {id, code} = req.params;
+
+    const student = await Student.findById(id);
+    const seat = await Seat.findById(code);
+
+    if (!student || !seat) {
+        return res.status(404).json('student or seat not found');
+    }
+
+    seat.students.addToSet(student._id);
+    student.seats.addToSet(seat._id);
+    await student.save();
+    await seat.save();
+    return res.json(seat);
+}
+
+async function deleteStudent(req, res) {
+    const {id, code} = req.params;
+    const student = await Student.findById(id);
+    const seat = await Seat.findById(code);
+
+    if (!student || !seat) {
+        return res.status(404).json('student or seat not found');
+    }
+
+    const lengthBeforePull = seat.students.length;
+    //console.log(lengthBeforePull);
+    seat.students.pull(student._id);
+    const lengthAfterPull = seat.students.length;
+    //console.log(lengthAfterPull);
+
+    if (lengthBeforePull === lengthAfterPull) {
+        return res.status(404).json('seat does not contain this student');
+    }
+
+    await seat.save();
+    return res.json(seat);
+}
+
 
 module.exports = {
   addSeat,
   getAllSeats,
   getSeat,
   updateSeat,
-  deleteSeat
+  deleteSeat,
+  addStudent,
+  deleteStudent,
 };
