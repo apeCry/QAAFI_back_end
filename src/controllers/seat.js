@@ -1,4 +1,5 @@
 const Seat = require('../models/seat');
+const Student = require('../models/student');
 
 async function addSeat(req, res) {
     const {code, description} = req.body;
@@ -50,6 +51,17 @@ async function deleteSeat(req, res) {
     if (!seat) {
         return res.status(404).json('seat not found');
     }
+
+    await Student.updateMany(
+        {
+            _id: { $in: seat.students }
+        },
+        {
+            $pull: {
+                seats: seat._id
+            }
+        }
+    );
 
     return res.json(seat);
 }

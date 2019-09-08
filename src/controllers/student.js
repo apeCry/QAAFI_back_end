@@ -55,6 +55,11 @@ async function deleteStudent(req, res) {
         return res.status(404).json('student not found');
     }
 
+    await Seat.updateMany (
+        { _id: {$in: student.seats}},
+        { $pull: { students: student._id} }
+    );
+
     return res.json(student);
 }
 
@@ -68,7 +73,9 @@ async function addSeat(req, res) {
     }
 
     student.seats.addToSet(seat._id);
+    seat.students.addToSet(student._id);
     await student.save();
+    await seat.save();
     return res.json(student);
 }
 
