@@ -5,7 +5,9 @@ const {
     getAllStudents,
     getStudent,
     updateStudent,
-    deleteStudent
+    deleteStudent,
+    addSeat,
+    deleteSeat,
 } = require('../controllers/student');
 
 const router = express.Router();
@@ -16,5 +18,8 @@ router.get('/:id', getStudent);
 router.post('/', addStudent);
 router.put('/:id', updateStudent);
 router.delete('/:id', deleteStudent);
+router.post('/:id/seats/:code', addSeat);
+router.delete('/:id/seats/:code', deleteSeat);
+
 
 module.exports = router;

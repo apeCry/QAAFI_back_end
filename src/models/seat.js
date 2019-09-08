@@ -16,7 +16,7 @@ const schema = new mongoose.Schema({
       default: '',
       required: true
     },
-    //seekers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Seeker' }],
+    students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }],
     __v: { type: Number, select: false }
   },
   {

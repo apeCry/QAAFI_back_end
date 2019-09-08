@@ -12,7 +12,7 @@ async function addSeat(req, res) {
 
 async function getSeat(req, res) {
     const {id: code} = req.params;
-    const seat = await Seat.findById(code);
+    const seat = await Seat.findById(code).populate('students');
 
     if (!seat) {
         return res.status(404).json('seat not found');
