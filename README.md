@@ -7,3 +7,5 @@
 #version2 email validation
 
 #version3 student, seat one to many relation
+
+#version4 student,seat many to many. handle with the relation (updateMany) when delete
